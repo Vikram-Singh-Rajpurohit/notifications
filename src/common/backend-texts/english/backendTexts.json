@@ -1,0 +1,31 @@
+{
+  "app": {
+    "health": "Events service is working fine..."
+  },
+  "notFoundException": {
+    "message": "The server cannot find the requested resource",
+    "messageCode": "1001"
+  },
+  "badRequestException": {
+    "message": "The server is unable to process the request due to invalid information sent by the client",
+    "messageCode": "1002"
+  },
+  "event": {
+    "create": {
+      "message": "Event creation successful",
+      "messageCode": "1017"
+    },
+    "update": {
+      "message": "Event update successful",
+      "messageCode": "1018"
+    },
+    "interested": {
+      "message": "Thank you for showing interest in the event!",
+      "messageCode": "1020"
+    },
+    "uninterested": {
+      "message": "You are no longer interested in this event. Thank you!",
+      "messageCode": "1021"
+    }
+  }
+}
