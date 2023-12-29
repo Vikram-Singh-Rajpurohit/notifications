@@ -6,8 +6,6 @@ import { NotificationsController } from './notifications.controller'
 import { NotificationsService } from './notifications.service'
 
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
-import { AllExceptionsFilter } from '../common/filters/all-exception.filter'
-import { ResponseInterceptor } from '../common/interceptors/response.interceptor'
 import config from '../config'
 import { MongooseModule } from '@nestjs/mongoose'
 
@@ -35,16 +33,6 @@ import { MongooseModule } from '@nestjs/mongoose'
     MongooseModule.forFeature([]),
   ],
   controllers: [NotificationsController],
-  providers: [
-    NotificationsService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
-  ],
+  providers: [NotificationsService],
 })
 export class NotificationsModule {}
