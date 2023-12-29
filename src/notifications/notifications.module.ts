@@ -2,16 +2,15 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { I18nModule } from 'nestjs-i18n'
 import * as path from 'path'
+import config from '../config'
 import { NotificationsController } from './notifications.controller'
 import { NotificationsService } from './services/notifications.service'
-
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserCollectionName, UserEntity, UserSchema } from './entities/users.entity'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     I18nModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -26,7 +25,7 @@ import { UserCollectionName, UserEntity, UserSchema } from './entities/users.ent
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: process.env.MONGODB_URI,
+        uri: configService.get<string>('mongodb.uri'),
       }),
       inject: [ConfigService],
     }),
