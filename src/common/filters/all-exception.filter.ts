@@ -1,102 +1,83 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
-import { HttpAdapterHost } from '@nestjs/core'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import {
+  ArgumentsHost,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common'
 import { I18nService } from 'nestjs-i18n'
-import { LoggerEntity } from '../entities/logger.entity'
+import { throwError } from 'rxjs'
+import { PaymentRequiredException } from '../exceptions/payment-required.exception'
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(
-    @InjectModel(LoggerEntity.name)
-    private readonly loggerModel: Model<LoggerEntity>,
-    private readonly i18n: I18nService,
-    private readonly httpAdapterHost: HttpAdapterHost,
-  ) {}
+  constructor(private readonly i18n: I18nService) {}
 
-  catch(exception: unknown, host: ArgumentsHost): any {
-    const [req] = host.getArgs()
-    const startTime = +req._startTime
-    const endTime = +new Date()
-    const reqTime = endTime - startTime
-
-    // In certain situations `httpAdapter` might not be available in the constructor method, thus we should resolve it here.
-
-    const { httpAdapter } = this.httpAdapterHost
-
-    const ctx = host.switchToHttp()
-    const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
-
-    let formattedResponse = {}
-
-    if (exception instanceof HttpException) {
+  catch(exception: any, host: ArgumentsHost): any {
+    console.log('🚀 ~ file: all-exception.filter.ts:14 ~ AllExceptionsFilter ~ exception', exception)
+    if (exception instanceof BadRequestException) {
       const exceptionResponse: any = exception.getResponse()
       const statusCode = exception.getStatus()
-      let userMessage = exceptionResponse?.userMessage
-      let userMessageCode = exceptionResponse.userMessageCode
-      let developerMessage = exceptionResponse?.developerMessage || exceptionResponse?.message || 'Something wend wrong'
+      const userMessage = exceptionResponse?.userMessage || ''
+      const userMessageCode = exceptionResponse?.userMessageCode || ''
+      const developerMessage = exceptionResponse?.developerMessage || exceptionResponse.message || ''
+      const args = exceptionResponse?.args || {}
 
-      if (exception.getStatus() === 400) {
-        userMessage = userMessage || this.i18n.t('backendTexts.badRequestException.message')
-        userMessageCode = userMessageCode || this.i18n.t('backendTexts.badRequestException.messageCode')
-      }
-
-      //To cutomize system generated error messages
-      switch (developerMessage) {
-        case 'Unauthorized':
-          developerMessage = this.i18n.t('backendTexts.auth.developerMessage.unauthorized')
-          userMessage = this.i18n.t('backendTexts.auth.unauthorized.message')
-          userMessageCode = this.i18n.t('backendTexts.auth.unauthorized.messageCode')
-          break
-        case 'Forbidden resource':
-          developerMessage = this.i18n.t('backendTexts.auth.developerMessage.forbiddenResource')
-          break
-      }
-
-      formattedResponse = {
+      const formattedResponse = {
         statusCode,
         success: false,
-        message: userMessage ? this.i18n.t(userMessage) : this.i18n.t('backendTexts.auth.userMessage.message'),
-        messageCode: userMessageCode ? this.i18n.t(userMessageCode) : this.i18n.t('backendTexts.auth.userMessage.messageCode'),
+        message: userMessage ? this.i18n.t(userMessage, { args }) : this.i18n.t('backendTexts.badRequestException.message'),
+        messageCode: userMessageCode ? this.i18n.t(userMessageCode) : this.i18n.t('backendTexts.badRequestException.messageCode'),
         developerMessage: typeof developerMessage === 'string' ? this.i18n.t(developerMessage) : developerMessage.toString(),
         data: {},
       }
-    }
-    // handling error if any microservice is down
-    else if (exception['errno'] === -111) {
-      formattedResponse = {
-        statusCode: 503,
+      return throwError(() => formattedResponse)
+    } else if (exception instanceof NotFoundException) {
+      const exceptionResponse: any = exception.getResponse()
+      const statusCode = exception.getStatus()
+      const userMessage = exceptionResponse?.userMessage || ''
+      const userMessageCode = exceptionResponse?.userMessageCode || ''
+      const developerMessage = exceptionResponse?.developerMessage || exceptionResponse.message || ''
+      const formattedResponse = {
+        statusCode,
         success: false,
-        message: `Unable to establish connection with the server at address '${exception['address']}' and port '${exception['port']}'.`,
-        data: exception,
-      }
-    } else if (
-      typeof exception === 'string' &&
-      exception === 'There is no matching message handler defined in the remote service.'
-    ) {
-      formattedResponse = {
-        statusCode: 404,
-        success: false,
-        developerMessage: 'There is no matching message handler defined in the remote service.',
+        message: userMessage ? this.i18n.t(userMessage) : this.i18n.t('backendTexts.notFoundException.message'),
+        messageCode: userMessageCode ? this.i18n.t(userMessageCode) : this.i18n.t('backendTexts.notFoundException.messageCode'),
+        developerMessage: typeof developerMessage === 'string' ? this.i18n.t(developerMessage) : developerMessage.toString(),
         data: {},
       }
+      return throwError(() => formattedResponse)
+    } else if (exception instanceof PaymentRequiredException) {
+      const exceptionResponse: any = exception.getResponse()
+      const statusCode = exception.getStatus()
+      const userMessage = exceptionResponse?.userMessage || ''
+      const userMessageCode = exceptionResponse?.userMessageCode || ''
+      const developerMessage = exceptionResponse?.developerMessage || exceptionResponse.message || ''
+      const formattedResponse = {
+        statusCode,
+        success: false,
+        message: userMessage ? this.i18n.t(userMessage) : this.i18n.t('backendTexts.paymentRequiredException.message'),
+        messageCode: userMessageCode
+          ? this.i18n.t(userMessageCode)
+          : this.i18n.t('backendTexts.paymentRequiredException.messageCode'),
+        developerMessage: typeof developerMessage === 'string' ? this.i18n.t(developerMessage) : developerMessage.toString(),
+        data: {},
+      }
+      return throwError(() => formattedResponse)
     } else {
-      formattedResponse = exception
+      const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+      const formattedResponse = {
+        statusCode: httpStatus,
+        success: false,
+        message: 'something went wrong please try again later',
+        messageCode: '1100',
+        developerMessage: exception.message ? this.i18n.t(exception.message) : 'Something Bad happend',
+        data: {},
+      }
+      return throwError(() => formattedResponse)
     }
-
-    if (req.url !== '/') {
-      this.loggerModel.create({
-        requestMethod: req.method,
-        requestUrl: req.url,
-        requestHeaders: req.headers,
-        requestBody: req.body,
-        statusCode: formattedResponse['statusCode'],
-        responseBody: formattedResponse,
-        startTime,
-        endTime,
-        executionTime: reqTime,
-      })
-    }
-    httpAdapter.reply(ctx.getResponse(), formattedResponse, formattedResponse['statusCode'])
   }
 }

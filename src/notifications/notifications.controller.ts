@@ -12,5 +12,7 @@ export class NotificationsController {
   }
 
   @Post('/send-notifications')
-  async sendNotification(@Req() req: any, @RequestHeaders() headers: any, @Body() body: any): Promise<any> {}
+  async sendNotification(@Req() req: any, @RequestHeaders() headers: any, @Body() body: any): Promise<any> {
+    return 'vikram'
+  }
 }

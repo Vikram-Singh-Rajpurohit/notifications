@@ -1,0 +1,30 @@
+{
+  "requestApproved": {
+    "title": "Item request Approved",
+    "message": "{ownerName} has approved your request for {itemName}."
+  },
+  "requestDeclined": {
+    "title": "Item request declined",
+    "message": "Regrettably, your request for {itemName} has been declined by {ownerName}. The reason for the cancellation is: {rejectedReason}"
+  },
+  "requestCancel": {
+    "title": "Item request is canceled by renter",
+    "message": "Item request for {itemName} is canceled by renter, \nCancel Reason: {canceledReason}."
+  },
+  "orderCancelByRenter": {
+    "title": "Booking order is canceled by {renterName}",
+    "message": "Hello {renteeName}, we regret to inform you that the booking order for {itemName} has been canceled by {renterName}. The reason for cancellation is as follows: {canceledReason}."
+  },
+  "orderCancelByRentee": {
+    "title": "Booking order is canceled by {renteeName}",
+    "message": "Hello {renterName}, we regret to inform you that the booking order for {itemName} has been canceled by {renteeName}. The reason for cancellation is as follows: {canceledReason}."
+  },
+  "pickupInitiated": {
+    "title": "Item pickup initiated",
+    "message": "Your pickup for {itemName} has been initiated, you can now pick up your item."
+  },
+  "orderCompleted": {
+    "title": "Item order is completed",
+    "message": "Your booking order for {itemName} is completed."
+  }
+}
