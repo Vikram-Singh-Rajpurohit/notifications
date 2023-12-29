@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { I18nModule } from 'nestjs-i18n'
 import * as path from 'path'
 import { NotificationsController } from './notifications.controller'
-import { NotificationsService } from './notifications.service'
+import { NotificationsService } from './services/notifications.service'
 
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import config from '../config'
