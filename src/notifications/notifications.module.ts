@@ -9,6 +9,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { AllExceptionsFilter } from '../common/filters/all-exception.filter'
 import { ResponseInterceptor } from '../common/interceptors/response.interceptor'
 import config from '../config'
+import { MongooseModule } from '@nestjs/mongoose'
 
 @Module({
   imports: [
@@ -24,6 +25,14 @@ import config from '../config'
       }),
       inject: [ConfigService],
     }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('mongodb.uri'),
+      }),
+      inject: [ConfigService],
+    }),
+    MongooseModule.forFeature([]),
   ],
   controllers: [NotificationsController],
   providers: [
