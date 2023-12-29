@@ -1,5 +1,4 @@
 import { Logger, VersioningType } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { NotificationsModule } from './notifications/notifications.module'
@@ -12,10 +11,7 @@ async function bootstrap() {
   }) // Enable versioning
 
   const logger = new Logger()
-  const configService = app.get(ConfigService)
-  logger.log(
-    `Notification server is listening on port ${configService.get('port')} | Environment: ${process.env.NODE_ENVIRONMENT}`,
-  )
+  logger.log(`Notification server is listening on port ${process.env.PORT} | Environment: ${process.env.NODE_ENVIRONMENT}`)
 
   const config = new DocumentBuilder()
     .setTitle('Notifications Service')
@@ -26,6 +22,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
 
-  await app.listen(configService.get('port'))
+  await app.listen(process.env.PORT)
 }
 bootstrap()

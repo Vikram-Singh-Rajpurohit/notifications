@@ -6,13 +6,12 @@ import { NotificationsController } from './notifications.controller'
 import { NotificationsService } from './services/notifications.service'
 
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
-import config from '../config'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserCollectionName, UserEntity, UserSchema } from './entities/users.entity'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+    ConfigModule.forRoot({ isGlobal: true }),
     I18nModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -27,7 +26,7 @@ import { UserCollectionName, UserEntity, UserSchema } from './entities/users.ent
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('mongodb.uri'),
+        uri: process.env.MONGODB_URI,
       }),
       inject: [ConfigService],
     }),
