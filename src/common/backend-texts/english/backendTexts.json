@@ -1,31 +1,37 @@
 {
-  "app": {
-    "health": "Events service is working fine..."
-  },
-  "notFoundException": {
-    "message": "The server cannot find the requested resource",
-    "messageCode": "1001"
+  "invalidCredential": {
+    "message": "Incorrect username or password.",
+    "messageCode": "1098"
   },
   "badRequestException": {
     "message": "The server is unable to process the request due to invalid information sent by the client",
-    "messageCode": "1002"
+    "messageCode": "1099"
   },
-  "event": {
-    "create": {
-      "message": "Event creation successful",
-      "messageCode": "1017"
+  "auth": {
+    "developerMessage": {
+      "unauthorized": "Invalid token",
+      "forbiddenResource": "User role is not authorized for this access",
+      "userNotFoundInDatabase": "User doesn't exist in the database"
     },
-    "update": {
-      "message": "Event update successful",
-      "messageCode": "1018"
+    "unauthorized": {
+      "message": "Invalid token",
+      "messageCode": "1097"
     },
-    "interested": {
-      "message": "Thank you for showing interest in the event!",
-      "messageCode": "1020"
-    },
-    "uninterested": {
-      "message": "You are no longer interested in this event. Thank you!",
-      "messageCode": "1021"
+    "userMessage": {
+      "message": "Something went wrong please try again later",
+      "messageCode": "1100"
     }
+  },
+  "userSignUp": {
+    "message": "Registration successful. Welcome!",
+    "messageCode": "1007"
+  },
+  "userSignIn": {
+    "message": "Sign-in successful. Welcome back",
+    "messageCode": "1008"
+  },
+  "userSignOut": {
+    "message": "Sign-out successful. Goodbye!",
+    "messageCode": "1009"
   }
 }

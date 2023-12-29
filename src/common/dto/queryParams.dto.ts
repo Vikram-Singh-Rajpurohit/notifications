@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
 import { IsIn, IsInt, IsOptional, IsPositive, IsString } from 'class-validator'
 
-export class PaginationDto {
+export class QueryParamsDto {
   @IsInt()
   @Type(() => Number)
   @IsPositive()
@@ -26,4 +26,9 @@ export class PaginationDto {
   @IsString()
   @IsOptional()
   search: string
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['LATEST', 'OLDEST'])
+  tag: string
 }
