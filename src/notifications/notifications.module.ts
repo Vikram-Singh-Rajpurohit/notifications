@@ -8,6 +8,7 @@ import { NotificationsService } from './services/notifications.service'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import config from '../config'
 import { MongooseModule } from '@nestjs/mongoose'
+import { UserCollectionName, UserEntity, UserSchema } from './entities/users.entity'
 
 @Module({
   imports: [
@@ -30,7 +31,13 @@ import { MongooseModule } from '@nestjs/mongoose'
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([]),
+    MongooseModule.forFeature([
+      {
+        name: UserEntity.name,
+        schema: UserSchema,
+        collection: UserCollectionName,
+      },
+    ]),
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],
