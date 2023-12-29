@@ -1,29 +1,25 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { UserEntity } from '../entities/users.entity'
-import mongoose, { Model } from 'mongoose'
 import admin from 'firebase-admin'
+import { Model } from 'mongoose'
+import { UserEntity } from '../entities/users.entity'
 @Injectable()
 export class NotificationsService {
   constructor(@InjectModel(UserEntity.name) private readonly userModel: Model<UserEntity>) {}
-  getHello(): string {
-    return 'Hello World!'
-  }
 
   async sendNotification(bodyParams: any) {
+    const returnResponse: any = {}
     const usersData = await this.userModel.find().lean()
     if (!usersData || usersData.length == 0) {
       return true
     }
 
     const tokens = usersData.map((user) => user.deviceToken)
-    const sendNotification = await this._sendNotification(tokens, bodyParams?.title, bodyParams?.message, {})
-    console.log(
-      '🚀 ~ file: notifications.service.ts:22 ~ NotificationsService ~ sendNotification ~ sendNotification:',
-      sendNotification,
-    )
-
-    return sendNotification
+    if (tokens.length > 0) {
+      const sendNotification = await this._sendNotification(tokens, bodyParams?.title, bodyParams?.message, {})
+      returnResponse.sendNotification = sendNotification
+    }
+    return returnResponse
   }
 
   async _sendNotification(deviceTokens: any[], title: string, message: string, data: any): Promise<any> {

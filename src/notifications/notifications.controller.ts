@@ -5,11 +5,6 @@ import { sendNotificationsDto } from './dto/send-notification.dto'
 export class NotificationsController {
   constructor(private readonly notificationService: NotificationsService) {}
 
-  @Get('/')
-  getHello(): string {
-    return this.notificationService.getHello()
-  }
-
   @Post('/send-notifications')
   async sendNotification(@Body() bodyParams: sendNotificationsDto): Promise<any> {
     return await this.notificationService.sendNotification(bodyParams)
