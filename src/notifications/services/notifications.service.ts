@@ -1,18 +1,16 @@
-import { MailerService } from '@nestjs-modules/mailer'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { InjectModel } from '@nestjs/mongoose'
 import admin from 'firebase-admin'
 import { Model } from 'mongoose'
-import * as Twilio from 'twilio'
 import { UserEntity } from '../entities/users.entity'
+import * as Twilio from 'twilio'
+import { ConfigService } from '@nestjs/config'
 @Injectable()
 export class NotificationsService {
+  private readonly twilioClient: Twilio.Twilio
   constructor(
     @InjectModel(UserEntity.name) private readonly userModel: Model<UserEntity>,
     private readonly configService: ConfigService,
-    private readonly twilioClient: Twilio.Twilio,
-    private readonly mailerService: MailerService,
   ) {
     this.twilioClient = Twilio(this.configService.get('twilio.accountSID'), this.configService.get('twilio.authToken'))
   }
@@ -91,21 +89,6 @@ export class NotificationsService {
       return messageSentResponse.sid
     } catch (error) {
       console.error(`Error sending SMS: ${error.messageSentResponse}`)
-    }
-  }
-
-  async _sendEmail(recipientEmail: string, subject: string, data: any) {
-    try {
-      const sendEmailResponse = await this.mailerService.sendMail({
-        to: recipientEmail,
-        subject: subject,
-        // template: './notification',
-        context: { ...data },
-      })
-      console.log('🚀 ~ Email notification sent successfully to ', recipientEmail)
-      return sendEmailResponse
-    } catch (error) {
-      console.error('🚀 ~ Email notification failed to send to', recipientEmail, error)
     }
   }
 }
