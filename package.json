@@ -29,7 +29,6 @@
     "@nestjs/swagger": "^7.1.17",
     "class-transformer": "^0.5.1",
     "firebase-admin": "^12.0.0",
-    "nestjs-i18n": "^9.2.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.0",
