@@ -38,8 +38,7 @@ export class NotificationsService {
       const emailId = user.emailId
       const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
       returnResponse.sendSMS = sendSms
-      const data = { message }
-      const sendEmail = this._sendEmail(emailId, title, data) // Send Email
+      const sendEmail = this._sendEmail(emailId, title, message) // Send Email
       returnResponse.sendEmail = sendEmail
     })
 
@@ -103,12 +102,8 @@ export class NotificationsService {
         to: recipientEmail,
         subject: subject,
         template: './notification', //add your custom template
-        context: { ...data },
+        context: { message: data },
       })
-      console.log(
-        '🚀 ~ file: notifications.service.ts:108 ~ NotificationsService ~ _sendEmail ~ sendEmailResponse:',
-        sendEmailResponse,
-      )
       console.log('🚀 ~ Email notification sent successfully to ', recipientEmail)
       return sendEmailResponse
     } catch (error) {
