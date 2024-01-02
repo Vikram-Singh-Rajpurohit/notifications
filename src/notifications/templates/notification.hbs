@@ -1,0 +1,65 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <link rel='preconnect' href='https://fonts.googleapis.com' />
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap' rel='stylesheet' />
+    <title>Rev Rental</title>
+    <style>
+      * { padding: 0px; margin: 0px; font-family: "Poppins", sans-serif; } .bg_background { width: 600px; /* height: 100vh;
+      min-height: 500px; */ margin: auto; background-color: #fff6e9; padding: 1rem; } .logo { text-align: center; padding: 2rem 0;
+      } .detail_body { /* border: 1px solid rgba(255, 255, 255, 0.1); */ box-shadow: 0px 0px 10px #0000000d; border-radius: 15px;
+      overflow: hidden; background-color: #ffffff; } .bg_image_border { width: 100%; height: 11px; /* background-color: #0074DD;
+      */ background: linear-gradient(to right, #fbc606, #f16622); } .bg_image { text-align: center; padding: 15px 0; } .heading {
+      font: normal normal 600 37px/39px Poppins; color: #414141; text-align: center; padding: 1rem 0; } .text_details { padding:
+      1rem 2rem 5rem 2rem; } .text_detail { margin-top: 10px; } .text_details p { font: normal normal 300 14px/18px Poppins;
+      color: #414141; margin-bottom: 1rem; } .text_details p a { font: normal normal 300 14px/18px Poppins; color: #ff8341;
+      margin-bottom: 1rem; text-decoration: none; } .text_details p span { color: #ff8341; } .copyright { font: normal normal 600
+      13px/17px Poppins; text-align: center; color: #414141; padding: 2rem 0 0 0; } .copyright_bottom { font: normal normal 500
+      12px/17px Poppins; text-align: center; color: #414141; padding: 0 0 1rem 0; }
+    </style>
+  </head>
+
+  <body>
+    <div class='bg_background'>
+      <section class='logo'>
+        <img src='https://revrental-others.s3.amazonaws.com/newLogo.png' alt='' />
+      </section>
+      <section class='detail_body'>
+        <section class='bg_image_border'>
+          <!-- <img src="./images/Rectangle.svg" alt=""> -->
+        </section>
+        <section class='bg_image'>
+          <!-- <img src="https://revrental-others.s3.amazonaws.com/welcomRev.png" alt=""> -->
+        </section>
+        <section class='text_details'>
+          <!-- <div class="heading">Verification Code</div> -->
+          <div class='text_detail text_position'>
+            <!-- <p>
+
+                        We are glad that you have chosen to register with <a href="https://www.activaterev.com/"
+                            target="_blank">Rev Rental</a>. In order to
+                        complete your registration process, we need to verify your email address.
+                    </p> -->
+            <p>{{message}}</p>
+            <!-- <p>
+              <span class="opt_size">[OTP Code]</span>
+            </p> -->
+
+            <p>Thank you for choosing
+              <a href='https://www.activaterev.com/' target='_blank'>Rev Rental</a>,</p>
+            <p style='margin-bottom: 0px'>Best Regards,</p>
+            <p style='margin-bottom: 0px'>
+              <a href='https://www.activaterev.com/' target='_blank'>Rev Rental</a>
+            </p>
+            <!-- <p> Customer Support Team</p> -->
+          </div>
+        </section>
+      </section>
+      <section class='copyright'>Copyright © Rev Rental, 2023. All Rights Reserved.</section>
+      <section class='copyright_bottom'>This is an automatically generated email – please do not reply to it.</section>
+    </div>
+  </body>
+</html>

@@ -5,12 +5,14 @@ import { Model } from 'mongoose'
 import { UserEntity } from '../entities/users.entity'
 import * as Twilio from 'twilio'
 import { ConfigService } from '@nestjs/config'
+import { MailerService } from '@nestjs-modules/mailer'
 @Injectable()
 export class NotificationsService {
   private readonly twilioClient: Twilio.Twilio
   constructor(
     @InjectModel(UserEntity.name) private readonly userModel: Model<UserEntity>,
     private readonly configService: ConfigService,
+    private readonly mailerService: MailerService,
   ) {
     this.twilioClient = Twilio(this.configService.get('twilio.accountSID'), this.configService.get('twilio.authToken'))
   }
@@ -25,17 +27,20 @@ export class NotificationsService {
 
     const tokens = usersData.map((user) => user.deviceToken)
     if (tokens.length > 0) {
-      const sendNotification = await this._sendNotification(tokens, bodyParams?.title, bodyParams?.message, {})
+      const sendNotification = this._sendNotification(tokens, bodyParams?.title, bodyParams?.message, {})
       returnResponse.sendNotification = sendNotification
     }
     const message = bodyParams?.message
+    const title = bodyParams?.title
 
     usersData.map(async (user) => {
       const mobileNo = user.mobileNo
       const emailId = user.emailId
-      const sendSms = await this._sendSMS(mobileNo, message) // Send Sms using twilio
+      const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
       returnResponse.sendSMS = sendSms
-      console.log('🚀 ~ file: notifications.service.ts:38 ~ NotificationsService ~ usersData.map ~ sendSms:', sendSms)
+      const data = { message }
+      const sendEmail = this._sendEmail(emailId, title, data) // Send Email
+      returnResponse.sendEmail = sendEmail
     })
 
     return returnResponse
@@ -89,6 +94,25 @@ export class NotificationsService {
       return messageSentResponse.sid
     } catch (error) {
       console.error(`Error sending SMS: ${error.messageSentResponse}`)
+    }
+  }
+
+  async _sendEmail(recipientEmail: string, subject: string, data: any) {
+    try {
+      const sendEmailResponse = await this.mailerService.sendMail({
+        to: recipientEmail,
+        subject: subject,
+        template: './notification', //add your custom template
+        context: { ...data },
+      })
+      console.log(
+        '🚀 ~ file: notifications.service.ts:108 ~ NotificationsService ~ _sendEmail ~ sendEmailResponse:',
+        sendEmailResponse,
+      )
+      console.log('🚀 ~ Email notification sent successfully to ', recipientEmail)
+      return sendEmailResponse
+    } catch (error) {
+      console.error('🚀 ~ Email notification failed to send to', recipientEmail, error)
     }
   }
 }
