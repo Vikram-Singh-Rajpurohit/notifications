@@ -24,23 +24,31 @@ export class NotificationsService {
     if (!usersData || usersData.length == 0) {
       return true
     }
-
-    const tokens = usersData.map((user) => user.deviceToken)
-    if (tokens.length > 0) {
-      const sendNotification = this._sendNotification(tokens, bodyParams?.title, bodyParams?.message, {})
-      returnResponse.sendNotification = sendNotification
-    }
     const message = bodyParams?.message
     const title = bodyParams?.title
 
+    const tokens = []
+
     usersData.map(async (user) => {
-      const mobileNo = user.mobileNo
-      const emailId = user.emailId
-      const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
-      returnResponse.sendSMS = sendSms
-      const sendEmail = this._sendEmail(emailId, title, message) // Send Email
-      returnResponse.sendEmail = sendEmail
+      if (user?.deviceToken) {
+        tokens.push(user.deviceToken)
+      }
+      if (user?.mobileNo) {
+        const mobileNo = user?.mobileNo
+        const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
+        returnResponse.sendSMS = sendSms
+      }
+      if (user?.emailId) {
+        const emailId = user?.emailId
+        const sendEmail = this._sendEmail(emailId, title, message) // Send Email
+        returnResponse.sendEmail = sendEmail
+      }
     })
+
+    if (tokens.length > 0) {
+      const sendNotification = this._sendNotification(tokens, title, message, {}) // Send Push notifications
+      returnResponse.sendNotification = sendNotification
+    }
 
     return returnResponse
   }
@@ -96,15 +104,15 @@ export class NotificationsService {
     }
   }
 
-  async _sendEmail(recipientEmail: string, subject: string, data: any) {
+  async _sendEmail(recipientEmail: string, subject: string, message: any) {
     try {
       const sendEmailResponse = await this.mailerService.sendMail({
         to: recipientEmail,
         subject: subject,
         template: './notification', //add your custom template
-        context: { message: data },
+        context: { message },
       })
-      console.log('🚀 ~ Email notification sent successfully to ', recipientEmail)
+      console.log('🚀 ~ Email notification sent successfully to ', sendEmailResponse, recipientEmail)
       return sendEmailResponse
     } catch (error) {
       console.error('🚀 ~ Email notification failed to send to', recipientEmail, error)
