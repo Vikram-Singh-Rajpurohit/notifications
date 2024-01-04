@@ -112,7 +112,6 @@ export class NotificationsService {
 
   async _sendEmail(recipientEmail: string, subject: string, message: any) {
     try {
-      console.log('🚀 ~ file: notifications.service.ts:115 ~ useFactory: ~ __dirname:', join(__dirname, './templates/'))
       const sendEmailResponse = await this.mailerService.sendMail({
         to: recipientEmail,
         subject: subject,
