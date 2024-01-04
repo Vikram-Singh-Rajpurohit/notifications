@@ -34,11 +34,11 @@ export class NotificationsService {
       if (user?.deviceToken) {
         tokens.push(user.deviceToken)
       }
-      // if (user?.mobileNo) {
-      //   const mobileNo = user?.mobileNo
-      //   const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
-      //   returnResponse.sendSMS = sendSms
-      // }
+      if (user?.mobileNo) {
+        const mobileNo = user?.mobileNo
+        const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
+        returnResponse.sendSMS = sendSms
+      }
       if (user?.emailId) {
         const emailId = user?.emailId
         const sendEmail = this._sendEmail(emailId, title, message) // Send Email
