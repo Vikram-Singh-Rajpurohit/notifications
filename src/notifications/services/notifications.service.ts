@@ -6,6 +6,7 @@ import { UserEntity } from '../entities/users.entity'
 import * as Twilio from 'twilio'
 import { ConfigService } from '@nestjs/config'
 import { MailerService } from '@nestjs-modules/mailer'
+import { join } from 'path'
 @Injectable()
 export class NotificationsService {
   private readonly twilioClient: Twilio.Twilio
@@ -33,11 +34,11 @@ export class NotificationsService {
       if (user?.deviceToken) {
         tokens.push(user.deviceToken)
       }
-      if (user?.mobileNo) {
-        const mobileNo = user?.mobileNo
-        const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
-        returnResponse.sendSMS = sendSms
-      }
+      // if (user?.mobileNo) {
+      //   const mobileNo = user?.mobileNo
+      //   const sendSms = this._sendSMS(mobileNo, message) // Send Sms using twilio
+      //   returnResponse.sendSMS = sendSms
+      // }
       if (user?.emailId) {
         const emailId = user?.emailId
         const sendEmail = this._sendEmail(emailId, title, message) // Send Email
@@ -85,8 +86,13 @@ export class NotificationsService {
           },
         },
       })
+      console.log(
+        '🚀 ~ file: notifications.service.ts:89 ~ NotificationsService ~ response ~ response:',
+        JSON.stringify(response),
+      )
       return response
     } catch (error) {
+      console.log('🚀 ~ file: notifications.service.ts:92 ~ NotificationsService ~ _sendNotification ~ error:', error)
       return error
     }
   }
@@ -106,6 +112,7 @@ export class NotificationsService {
 
   async _sendEmail(recipientEmail: string, subject: string, message: any) {
     try {
+      console.log('🚀 ~ file: notifications.service.ts:115 ~ useFactory: ~ __dirname:', join(__dirname, './templates/'))
       const sendEmailResponse = await this.mailerService.sendMail({
         to: recipientEmail,
         subject: subject,

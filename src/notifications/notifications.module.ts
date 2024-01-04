@@ -8,6 +8,7 @@ import config from '../config'
 import { UserCollectionName, UserEntity, UserSchema } from './entities/users.entity'
 import { NotificationsController } from './notifications.controller'
 import { NotificationsService } from './services/notifications.service'
+console.log('🚀 ~ file: notifications.module.ts:49 ~ useFactory: ~ __dirname:', join(__dirname, './templates/'))
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
